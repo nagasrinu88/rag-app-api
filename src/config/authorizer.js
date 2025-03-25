@@ -49,8 +49,6 @@ const authorizer = (req, res, next) => {
     const clientSignature = req.headers['x-signature'];
     const timestamp = req.headers['x-timestamp'];
 
-    console.log(sortObjectKeys({'a':1,'b':2,'1':2,'2':1}));
-
     // Check for missing headers
     if (!authToken || !clientSignature || !timestamp) {
         return res.status(401).json({ error: 'Unauthorized: Missing headers' });
