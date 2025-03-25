@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "app.js",
   "type": "module",
+  "engines": {
+    "node": "20.18.3"
+  },
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
