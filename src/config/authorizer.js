@@ -6,13 +6,16 @@ function generateHMACSignature({ secretKey, timestamp, params, body }) {
         throw new Error('Missing required signature components');
     }
 
+    params = params || {};
+    body = body || {};
     // Normalize inputs
-    const normalizedParams = params ? JSON.stringify(sortObjectKeys(params)) : '';
+    const normalizedParams = params ? (typeof params === 'string' ? params : JSON.stringify(sortObjectKeys(params))) : '';
     const normalizedBody = body ?
         (typeof body === 'string' ? body : JSON.stringify(sortObjectKeys(body))) : '';
 
     // Create signature payload
     const signaturePayload = `${timestamp}.${normalizedParams}.${normalizedBody}`;
+    // console.log("Signature payload is", signaturePayload);
 
     // Generate HMAC
     return crypto
@@ -68,10 +71,10 @@ const authorizer = (req, res, next) => {
     }
 
     const secretKey = process.env.APP_SECRET_KEY;
-    const body = JSON.stringify(req.body || {});
-    const params = JSON.stringify(req.params || {});
+    const body = req.body;
+    const params = req.params;
     const serverSignature = generateHMACSignature({ secretKey, timestamp, params, body });
-    console.log("Server Signature is", serverSignature);
+    // console.log("Server Signature is", serverSignature);
     if(!verifyHMAC({ receivedSig: clientSignature, secretKey, timestamp, params, body })) {
         return res.status(401).json({ error: 'Unauthorized: Invalid signature' });
     }
