@@ -6,10 +6,16 @@ import { generateResponse } from '../services/gemini.js';
 const router = express.Router();
 
 router.post('/', async (req, res) => {
+    const logObj = {
+        req: {},
+        res: {},
+        meta: {},
+    };
     const { query } = req.body;
-
+    logObj.req.query = query;
+    logObj.meta.ip = req.ip;
     try {
-        console.log("User Query is", query);
+        // console.log("User Query is", query);
         const embedding = await generateEmbeddings(query);
         const matches = await queryPinecone(embedding);
         const matchIds = matches.map(match => match.id);
@@ -19,11 +25,16 @@ router.post('/', async (req, res) => {
         const cleanedContext = context.replace(/\s+/g, ' ').trim();
 
         const response = await generateResponse(query, cleanedContext);
+        // Limiting the response to 100 characters for logging purposes
+        logObj.res.response = response.slice(0, 100);
 
         res.json({ response });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "An error occurred while processing your query." });
+    } finally {
+        // Log the request and response details
+        console.log("Request Log:", logObj);
     }
 });
 

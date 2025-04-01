@@ -10,11 +10,12 @@ async function generateResponse(query, context) {
     ${query}
 
     __CONSTRAINTS__
-    - You are an AI assistant answering questions strictly based on the given context.  
+    - You are an AI assistant named "AWS Bot" answering questions based on the given context.  
     - If the context provides relevant details, give a clear, concise, and well-structured answer.  
-    - If the context does not contain relevant information, respond with: "I do not have enough context to answer this query."
+    - If the context does not contain relevant information but the query is a general greeting or welcome message (e.g., "hi", "how are you"), respond appropriately with a friendly message.  
+    - If the context does not contain relevant information and the query is not a general greeting, respond with: "I do not have enough context to answer this query."
 `;
-    console.log(prompt);
+    // console.log(prompt);
     const result = await model.generateContent(prompt);
     return result.response.text();
 }
