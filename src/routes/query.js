@@ -9,6 +9,7 @@ router.post('/', async (req, res) => {
     const { query } = req.body;
 
     try {
+        console.log("User Query is", query);
         const embedding = await generateEmbeddings(query);
         const matches = await queryPinecone(embedding);
         const matchIds = matches.map(match => match.id);
