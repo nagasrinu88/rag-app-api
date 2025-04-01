@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     };
     const { query } = req.body;
     logObj.req.query = query;
-    logObj.meta.ip = req.ip;
+    logObj.meta.ip = req.headers['x-forwarded-for'] || req.ip;
     try {
         // console.log("User Query is", query);
         const embedding = await generateEmbeddings(query);
